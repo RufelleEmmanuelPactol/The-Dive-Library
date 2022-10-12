@@ -1,14 +1,18 @@
 #include <iostream>
 #include "fulcrum.h"
 int main() {
-    std::fulcrum arr(5);
-    arr.enqueue(5);
-    arr.push(3);
-    arr.push(2);
-    arr.enqueue(4);
-    std::cout << arr.pop() << std::endl;
-    for (int i=0; i<arr.arrsize(); i++){
-        std::cout << arr.array[i] << std::endl;
+    std::fulcrum<int> arrone(10);
+    std::fulcrum<int> arrtwo(5);
+    for (int i=0; i<5; i++){
+        arrone.push_back(5+i);
     }
-    return 0;
+    for (int i=0; i<5; i++){
+        arrtwo.push_back(20+i);
+    }
+    arrone.concat(arrtwo);
+    for (int i=0; i<10; i++){
+        std::cout << arrone.array[i] << std::endl;
+    }
+
+
 }
