@@ -23,6 +23,18 @@ namespace std{
             index = 0;
         }
 
+        fulcrum(int * arr, int n){ //transforms an array into a fulcrum array,
+            size = n * 2; //where n is the last element to be added and is NOT the max capacity of the last array
+            positive = 0;
+            negative = n;
+            basearray = new int[size];
+            array = basearray + n;
+            for (int i=0; i<n; i++){
+                *(array + i) = *(arr + i);
+            }
+            index = n;
+        }
+
         int enqueue (int n){
             array = array-1;
             index++;
@@ -52,4 +64,4 @@ namespace std{
 }
 
 
-#endif fulcrum_h
+#endif
