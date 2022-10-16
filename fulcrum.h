@@ -4,7 +4,7 @@
 
 #ifndef fulcrum_h
 #define fulcrum_h
-
+#include <algorithm>
 
 namespace std{
     template <typename T>
@@ -14,7 +14,7 @@ namespace std{
         T * basearray; // the reallocated base array
         int positive; //number of positions unfilled on the positive index before reallocating
         int negative; //number of positions unfilled on the negative index before reallocating
-        int index; //pointer to last filled index
+        int index; //pointer to past-the-last index
     public:
         T * array; //pointer to index zero
 
@@ -111,6 +111,29 @@ namespace std{
             }
             return;
         }
+
+        T * begin (){ // iterator
+            return array;
+        }
+
+        T * end (){ // iterator
+            return array+index;
+        }
+
+        void sort(void){ // overload for sort, where it automatically sorts in ascending
+            std::sort(this->begin(), this->end());
+        }
+
+        void sort(bool method){ // sorts, and if method = true, sorts in ascending, descending if false
+            if (method){
+                std::sort(this->begin(), this->end());
+            } else{
+                std::sort(this->begin(), this->end(), greater<T>());
+            }
+        }
+
+
+
     };
 }
 
