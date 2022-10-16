@@ -1,31 +1,35 @@
 #include <iostream>
 #include "fulcrum.h"
+#include "debug.h"
+#define SIZE 100000
 int main() {
-    std::fulcrum<int> arr(10);
-    arr.push_front(5);
-    std::cout << "CHECK: " << arr.array[0] << std::endl;
-    arr.push_front(12);
-    std::cout << "CHECK: " << arr.array[0] << std::endl;
-    arr.push_front(1);
-    std::cout << "CHECK: " << arr.array[0] << std::endl;
-    arr.push_front(21);
-    std::cout << "CHECK: " << arr.array[0] << std::endl;
-    arr.push_front(4);
-    std::cout << "CHECK: " << arr.array[0] << std::endl;
-    arr.push_front(15);
-    std::cout << "CHECK: " << arr.array[0] << std::endl;
-    std::cout << "ITERATOR END: " << *(arr.end()-1) << std::endl;
-    std::cout << "PRINTING INITIAL ARRAY: " << std::endl;
-    for (auto cur = arr.begin() ; cur!=arr.end(); cur++){
-        std::cout << *cur << std::endl;
+    Debug timer;
+    // time test for adding elements at front and removing them using a standard array
+    int array[SIZE];
+    int size = SIZE;
+    for (int i=0; i<size; i++){
+        for (int j=i; j>=0; j--){
+            array[j+1] = array[j];
+        }
+        array[0] = i;
     }
-    std::cout << "SORTING ARRAY: " << std::endl;
-    arr.sort(false);
+    for (int i=0; i<size; i++){
+        for (int j=0; j<size; j++){
+            array[j] = array[j+1];
+        }
+    }
+    std::cout << "PRIMITIVE ARRAY TIMER: \n";
+    timer.print();
+
+    Debug mytimer;
+    std::fulcrum<int> arr(SIZE);
+    for (int i=0; i<SIZE; i++){
+        arr.push_front(i);
+    }
     for (int i=0; i<arr.size(); i++){
-        std::cout << arr.array[i] << std::endl;
+        arr.pop_front();
     }
-
-
-
-
+    std::cout << "\nFULCRUM ARRAY TIMER: \n";
+    mytimer.print();
+    std::cin >> size;
 }
