@@ -31,5 +31,8 @@ int main() {
     }
     std::cout << "\nFULCRUM ARRAY TIMER: \n";
     mytimer.print();
+
+    std::cout << "\n\nWHERE SIZE OF PRIMITIVE ARRAY IS " << sizeof(array) << " BYTES\n";
+    std::cout << "WHERE SIZE OF FULCRUM ARRAY IS " << sizeof(arr) << " BYTES\n";
     std::cin >> size;
 }
