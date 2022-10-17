@@ -5,6 +5,7 @@
 #ifndef fulcrum_h
 #define fulcrum_h
 #include <algorithm>
+#include <cstring>
 
 namespace std{
     template <typename T>
@@ -26,6 +27,7 @@ namespace std{
             array = basearray+5;
             index = 0;
         }
+
 
         fulcrum(std::initializer_list<T> inputs){ // where you can add the array initialization body as a parameter (i.e., fulcrum<int> arr({4,3,2})
             int n = inputs.size();
@@ -102,12 +104,8 @@ namespace std{
         }
 
         void concat (std::fulcrum<T> fulcrum_two){ // concats the start of fulcrum_2 from the end of fulcrum_1
-            int size2 = fulcrum_two.size();
-            int temp_i = 0;
-            for (int i=index; i<index+size2; i++){
-                //to-do, check if the size if full and realloc if needed
-                array[i] = fulcrum_two.array[temp_i];
-                temp_i++;
+            for (auto i : fulcrum_two){
+                push_back(i);
             }
             return;
         }

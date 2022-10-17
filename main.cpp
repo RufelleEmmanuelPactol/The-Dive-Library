@@ -1,8 +1,21 @@
 #include <iostream>
 #include "fulcrum.h"
 #include "debug.h"
+#include <vector>
 #define SIZE 100000
 int main() {
+    std::fulcrum<std::string> one(10);
+    one.push_front("This is the start of the string");
+    std::fulcrum<std::string> two ({"This is what happens", "When you concat two array of arrays together", "Oki-oki!"});
+    one.concat(two);
+    for (auto i: one){
+        std::cout << i << std::endl;
+    }
+
+
+
+
+    /*
     Debug timer;
     // time test for adding elements at front and removing them using a standard array
     int array[SIZE];
@@ -32,7 +45,17 @@ int main() {
     std::cout << "\nFULCRUM ARRAY TIMER: \n";
     mytimer.print();
 
-    std::cout << "\n\nWHERE SIZE OF PRIMITIVE ARRAY IS " << sizeof(array) << " BYTES\n";
-    std::cout << "WHERE SIZE OF FULCRUM ARRAY IS " << sizeof(arr) << " BYTES\n";
-    std::cin >> size;
+    Debug vector_timer;
+    std::vector<int> my_vector;
+    for (int i=0; i<SIZE; i++){
+        my_vector.insert(my_vector.begin(), i);
+    }
+    for (int i=0; i<SIZE; i++){
+        my_vector.erase(my_vector.begin());
+    }
+
+    std::cout << "\nVECTOR ARRAY TIMER: \n";
+    vector_timer.print();
+    */
+    getchar();
 }
