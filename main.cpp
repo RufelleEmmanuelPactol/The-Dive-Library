@@ -1,8 +1,23 @@
 #include <iostream>
 #include "fulcrum.h"
 #include "debug.h"
+#include <vector>
 #define SIZE 100000
+using namespace csl;
 int main() {
+    std::string mystring;
+    csl::fulcrum<int> flc;
+    flc.push_back(4);
+    flc.push_back(2);
+    flc.push_back(9);
+    for (auto i : flc){
+        std::cout << i;
+    }
+
+
+
+
+    /*
     Debug timer;
     // time test for adding elements at front and removing them using a standard array
     int array[SIZE];
@@ -32,7 +47,18 @@ int main() {
     std::cout << "\nFULCRUM ARRAY TIMER: \n";
     mytimer.print();
 
-    std::cout << "\n\nWHERE SIZE OF PRIMITIVE ARRAY IS " << sizeof(array) << " BYTES\n";
-    std::cout << "WHERE SIZE OF FULCRUM ARRAY IS " << sizeof(arr) << " BYTES\n";
-    std::cin >> size;
+    Debug vector_timer;
+    std::vector<int> my_vector(100000);
+    for (int i=0; i<SIZE; i++){
+        my_vector.insert(my_vector.begin(), i);
+    }
+    for (int i=0; i<SIZE; i++){
+        my_vector.erase(my_vector.begin());
+    }
+
+    std::cout << "\nVECTOR ARRAY TIMER: \n";
+    vector_timer.print();
+
+    getchar();
+     */
 }

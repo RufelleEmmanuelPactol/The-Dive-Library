@@ -5,18 +5,70 @@
 #ifndef fulcrum_h
 #define fulcrum_h
 #include <algorithm>
+#include <cstring>
+#include <string>
+#include <cmath>
 
-namespace std{
-    template <typename T>
+
+namespace csl{ // Cube Standard Library
+
+
     //template allows for multiple data types
-    class fulcrum {
+    /*
+         * The fulcrum array is a special type of array
+         * that allows for faster operations, wherein
+         * any operation (aside from resizing)
+         * will take at MOST O(log n) time meanwhile
+         * basic operations (push_front and push_back)
+         * will take O(1), with basic removes
+         * also taking O(1)
+         */
+    template <typename T> class fulcrum {
+
+        const float R = 1.0/3.0;
         int arrsize;
+        T * array;
         T * basearray; // the reallocated base array
         int positive; //number of positions unfilled on the positive index before reallocating
         int negative; //number of positions unfilled on the negative index before reallocating
         int index; //pointer to past-the-last index
+
+
+
+        /*
+         * Principle of realloc:
+         * it must be where the number of elements is less than round(1/3 of the capacity)
+         * for example, where the max capacity is 10, the number of elements must not be less than or equal to four, where if it is,
+         * we reduce the capacity of the array
+         * the new size of the array should be (round(R*capacity))*2
+         * the starting point of the array should be after the 15%
+         * the ending point of the array should be right before the last 15%
+         * positive, negative = (15% of size_of_array)
+         *
+         */
+        void decrease(){
+            if (index<=round(arrsize*(R))){
+
+            }
+            return;
+        }
+        void increase(){
+            return;
+        }
+
     public:
+
+    /*public:
         T * array; //pointer to index zero
+        class iterator{
+        private:
+            static T*it;
+        public:
+            T* operator=(const T*ptr){
+                this->it = ptr;
+                return this;
+            }
+        }; */
 
         fulcrum(){ // base case, where it creates a fulcrum array with size 5, but with maxsize 10
             arrsize = 5*2;
@@ -26,6 +78,8 @@ namespace std{
             array = basearray+5;
             index = 0;
         }
+
+
 
         fulcrum(std::initializer_list<T> inputs){ // where you can add the array initialization body as a parameter (i.e., fulcrum<int> arr({4,3,2})
             int n = inputs.size();
@@ -69,6 +123,7 @@ namespace std{
             return n;
         }
 
+
         T push_back (T n){ // adds element at the back
             positive--;
             *(array+index) = n;
@@ -101,18 +156,15 @@ namespace std{
             return temp;
         }
 
-        void concat (std::fulcrum<T> fulcrum_two){ // concats the start of fulcrum_2 from the end of fulcrum_1
-            int size2 = fulcrum_two.size();
-            int temp_i = 0;
-            for (int i=index; i<index+size2; i++){
-                //to-do, check if the size if full and realloc if needed
-                array[i] = fulcrum_two.array[temp_i];
-                temp_i++;
+        void concat (csl::fulcrum<T> fulcrum_two){ // concats the start of fulcrum_2 from the end of fulcrum_1
+            for (auto i : fulcrum_two){
+                push_back(i);
             }
             return;
         }
 
         T * begin (){ // iterator
+
             return array;
         }
 
@@ -128,13 +180,19 @@ namespace std{
             if (method){
                 std::sort(this->begin(), this->end());
             } else{
-                std::sort(this->begin(), this->end(), greater<T>());
+                std::sort(this->begin(), this->end(), std::greater<T>());
             }
+        }
+
+        int getmemorysize (){
+            return sizeof(T)*arrsize;
         }
 
 
 
+
     };
+
 }
 
 
