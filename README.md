@@ -7,11 +7,13 @@ Dive Framework's Fulcrum Array data structure. Allows for O(1) head and tail ins
 ### Inserts:
 
 O(1) - add at head, add at tail
+
 Worst case: O(log n) - add at areas outside of head and tail
 
 ## Removes:
 
 O(1) - add at head, add at tail
+
 Worst case: O(log n) - add at areas outside of head and tail
 
 ## Resizes:
@@ -25,5 +27,6 @@ O(1) - standard index access
 ## Space complexity:
 
 Worst case: O(2n)
+
 Best case: O(n)
 
