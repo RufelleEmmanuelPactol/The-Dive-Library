@@ -10,21 +10,21 @@ O(1) - add at head, add at tail
 
 Worst case: O(log n) - add at areas outside of head and tail
 
-## Removes:
+### Removes:
 
 O(1) - add at head, add at tail
 
 Worst case: O(log n) - add at areas outside of head and tail
 
-## Resizes:
+### Resizes:
 
 O(n) - if array reduces or increases capacity
 
-## Access operations:
+### Access operations:
 
 O(1) - standard index access 
 
-## Space complexity:
+### Space complexity:
 
 Worst case: O(2n)
 
