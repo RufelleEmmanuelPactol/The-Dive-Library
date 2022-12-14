@@ -12,9 +12,9 @@ Worst case: O(log n) - add at areas outside of head and tail
 
 ### Removes:
 
-O(1) - add at head, add at tail
+O(1) - remove at head, remove at tail
 
-Worst case: O(log n) - add at areas outside of head and tail
+Worst case: O(log n) - remove at areas outside of head and tail
 
 ### Resizes:
 
