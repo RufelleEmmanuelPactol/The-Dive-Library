@@ -6,12 +6,8 @@
 using namespace dive;
 int main() {
     dive::fulcrum<int> arr(100);
-    dive::fulcrum<int> second_arr = {3, 1, 5, 1, 15, 6, 23, 14, 12, 13, 51, 123};
-    arr.concat(second_arr);
-    arr.array()[2];
-    for (auto i: arr){
-        std::cout << i << " ";
-    }
+    arr.set(0).to(1);
+    arr.set_value(0)->to(2);
 
 
 

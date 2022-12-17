@@ -306,8 +306,8 @@ namespace dive{ // Cube Standard Library
             if (index>this->index || index < 0){
                 throw ArrayIndexOutOfBounds(this->index, index);
             }
-            auto * temp = new element_construct(index, this);
-            return *temp;
+            element_construct temp(index, this, true);
+            return temp;
         }
         /*
          * To be used with the 'to' method. Returns an element_construct
@@ -317,11 +317,12 @@ namespace dive{ // Cube Standard Library
          * Syntax:
          * sample_arr->set_value(<index>)->to(<value);
          */
-        std::shared_ptr<element_construct>  set_value (int index){
+        element_construct*  set_value (int index){
             if (index>this->index || index < 0){
                 throw ArrayIndexOutOfBounds(this->index, index);
             }
-            auto temp = std::make_shared<element_construct>(index, this);
+
+            auto temp = new element_construct(index, this);
             return temp;
         }
 
@@ -337,6 +338,8 @@ namespace dive{ // Cube Standard Library
     private:
         class element_construct{
             friend class fulcrum<T>;
+            bool deleter{};
+
             int * elem_locator;
         public:
             /*
@@ -349,11 +352,23 @@ namespace dive{ // Cube Standard Library
              */
             void to (int value){
                 *elem_locator = value;
+                if (!deleter){
+                    delete this;
+                }
+
             }
+
+            ~element_construct()= default;
         protected:
             element_construct(int num, fulcrum<T> * instance){
                 elem_locator = instance->m_array + num;
+                deleter = false;
             }
+            element_construct(int num, fulcrum<T> * instance, bool deleter){
+                elem_locator = instance->m_array + num;
+                this->deleter = deleter;
+            }
+
         };
 
 
