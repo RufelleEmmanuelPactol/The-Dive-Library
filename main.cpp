@@ -3,34 +3,32 @@
 #include "debug.h"
 #include <vector>
 #define SIZE 100000
-using namespace csl;
+using namespace dive;
 int main() {
-    std::string mystring;
-    csl::fulcrum<int> flc;
-    flc.push_back(4);
-    flc.push_back(2);
-    flc.push_back(9);
-    for (auto i : flc){
-        std::cout << i;
-    }
+    dive::fulcrum<int> arr = {3, 2, 1, 1, 5};
+    std::cout << arr[4];
+
+
+
+
 
 
 
 
     /*
     Debug timer;
-    // time test for adding elements at front and removing them using a standard array
-    int array[SIZE];
+    // time test for adding elements at front and removing them using a standard m_array
+    int m_array[SIZE];
     int size = SIZE;
     for (int i=0; i<size; i++){
         for (int j=i; j>=0; j--){
-            array[j+1] = array[j];
+            m_array[j+1] = m_array[j];
         }
-        array[0] = i;
+        m_array[0] = i;
     }
     for (int i=0; i<size; i++){
         for (int j=0; j<size; j++){
-            array[j] = array[j+1];
+            m_array[j] = m_array[j+1];
         }
     }
     std::cout << "PRIMITIVE ARRAY TIMER: \n";
