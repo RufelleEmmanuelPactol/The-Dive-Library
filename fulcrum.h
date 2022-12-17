@@ -192,16 +192,16 @@ namespace dive{ // Cube Standard Library
         /*
          * This method adds element of typename T at the front of the m_array
          */
-        T push_front (T n){ // adds element at the front
+        bool push_front (T n){ // adds element at the front
             m_array = m_array - 1;
             index++;
             negative--;
             *(m_array) = n;
-            return n;
+            return true;
         }
 
 
-        int push_back (T n){ // adds element at the back
+        bool push_back (T n){ // adds element at the back
             positive--;
             *(m_array + index) = n;
             index++;
