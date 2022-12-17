@@ -1,5 +1,5 @@
 
-#include "fulcrum.h"
+#include "../Dive/Fulcrum/fulcrum.h"
 #include <iostream>
 
 void result_printer(bool result){

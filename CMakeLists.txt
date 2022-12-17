@@ -3,4 +3,4 @@ project(untitled12)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(untitled12 main.cpp debug.h)
+add_executable(untitled12 "Development Core/main.cpp" "Development Core/debug.h")

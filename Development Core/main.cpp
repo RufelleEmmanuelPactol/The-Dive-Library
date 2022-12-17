@@ -1,12 +1,17 @@
 #include <iostream>
-#include "fulcrum.h"
+#include "../Dive/Fulcrum/fulcrum.h"
 #include "debug.h"
 #include <vector>
 #define SIZE 100000
 using namespace dive;
 int main() {
-    dive::fulcrum<int> arr = {3, 2, 1, 1, 5};
-    std::cout << arr[4];
+    dive::fulcrum<int> arr(100);
+    dive::fulcrum<int> second_arr = {3, 1, 5, 1, 15, 6, 23, 14, 12, 13, 51, 123};
+    arr.concat(second_arr);
+    arr.array()[2];
+    for (auto i: arr){
+        std::cout << i << " ";
+    }
 
 
 
