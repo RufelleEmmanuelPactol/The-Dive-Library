@@ -5,9 +5,11 @@
 #define SIZE 100000
 using namespace dive;
 int main() {
-    dive::fulcrum<int> arr(100);
-    arr.set(0).to(1);
-    arr.set_value(0)->to(2);
+    dive::fulcrum<int> arr();
+    dive::
+
+
+
 
 
 

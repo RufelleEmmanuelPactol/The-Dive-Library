@@ -12,10 +12,14 @@
 #include "fulcrum_errors.h"
 
 
+
+
 namespace dive{ // Cube Standard Library
 
 
-
+    enum WARNINGS{
+        OFF, ON
+    };
 
     //template allows for multiple data types
     /*
@@ -29,15 +33,15 @@ namespace dive{ // Cube Standard Library
          */
     template <typename T> class fulcrum {
 
-        const float R = 1.0/3.0;
+        static constexpr float R = 1.0/3.0;
         int m_arrsize;
         T * m_container; // the reallocated base m_array
         int positive; //number of positions unfilled on the positive index before reallocating
         int negative; //number of positions unfilled on the negative index before reallocating
-        int index; //pointer to past-the-last index
+        int m_index; //pointer to past-the-last index
         bool m_warning = true;
 
-
+    private:
 
 
         /*
@@ -51,13 +55,13 @@ namespace dive{ // Cube Standard Library
          * positive, negative = (15% of size_of_array)
          *
          */
-        void decrease(){
-            if (index<=round(m_arrsize * (R))){
+        constexpr void decrease(){
+            if (m_index<=round(m_arrsize * (R))){
 
             }
             return;
         }
-        void increase(){
+        constexpr void increase(){
             return;
         }
 
@@ -75,7 +79,7 @@ namespace dive{ // Cube Standard Library
              *
              */
         T * array (){
-            DepracatedWarning(m_warning);
+            DepracatedWarning(m_warning, "array()");
             return m_array;
         }
 
@@ -88,8 +92,12 @@ namespace dive{ // Cube Standard Library
          *      set to true to raise warning levels when using deprecated methods
          *      set to false when you want to use deprecated methods
          */
-        void warnings(bool warn){
-            m_warning = warn;
+        constexpr void warnings(WARNINGS warn){
+            if (warn==ON){
+                m_warning = true;
+            } else {
+                m_warning = false;
+            }
         }
 
         // OPERATORS
@@ -103,7 +111,7 @@ namespace dive{ // Cube Standard Library
             negative = n;
             m_container = new T[m_arrsize];
             m_array = m_container + n;
-            index = n;
+            m_index = n;
             for (int i=0; i<n; i++){
                 m_array[i] = inputs.begin()[i];
             }
@@ -134,7 +142,7 @@ namespace dive{ // Cube Standard Library
             negative = 5;
             m_container = new T[m_arrsize];
             m_array = m_container + 5;
-            index = 0;
+            m_index = 0;
         }
 
 
@@ -146,7 +154,7 @@ namespace dive{ // Cube Standard Library
             negative = n;
             m_container = new T[m_arrsize];
             m_array = m_container + n;
-            index = n;
+            m_index = n;
             for (int i=0; i<n; i++){
                 m_array[i] = inputs.begin()[i];
             }
@@ -174,7 +182,7 @@ namespace dive{ // Cube Standard Library
             negative = n;
             m_container = new T[m_arrsize];
             m_array = m_container + n;
-            index = 0;
+            m_index = 0;
         }
 
         fulcrum(T * arr, int n){ //transforms an m_array into a fulcrum m_array,
@@ -186,7 +194,7 @@ namespace dive{ // Cube Standard Library
             for (int i=0; i<n; i++){
                 *(m_array + i) = *(arr + i);
             }
-            index = n;
+            m_index = n;
         }
 
         /*
@@ -194,7 +202,7 @@ namespace dive{ // Cube Standard Library
          */
         bool push_front (T n){ // adds element at the front
             m_array = m_array - 1;
-            index++;
+            m_index++;
             negative--;
             *(m_array) = n;
             return true;
@@ -203,8 +211,8 @@ namespace dive{ // Cube Standard Library
 
         bool push_back (T n){ // adds element at the back
             positive--;
-            *(m_array + index) = n;
-            index++;
+            *(m_array + m_index) = n;
+            m_index++;
             return true;
         }
 
@@ -213,7 +221,7 @@ namespace dive{ // Cube Standard Library
          * This method returns the used-up size in the fulcrum array
          */
         int size (){
-            return index;
+            return m_index;
         }
 
         /*
@@ -228,8 +236,8 @@ namespace dive{ // Cube Standard Library
          * This method returns the last element and removes it from the array.
          */
         T pop_back (){
-            T temp = *(m_array + index - 1);
-            index--;
+            T temp = *(m_array + m_index - 1);
+            m_index--;
             positive++;
             return temp;
         }
@@ -239,14 +247,14 @@ namespace dive{ // Cube Standard Library
          */
         T pop_front(){ // removes the element at the front
             T temp = *(m_array);
-            index--;
+            m_index--;
             negative++;
             m_array = m_array + 1;
             return temp;
         }
 
         bool replace(int indexAt, T element){ //replaces element at indexAt with the element specified at T element
-            DepracatedWarning(m_warning);
+            DepracatedWarning(m_warning, "replace(int, T)");
             T temp = m_array[indexAt];
             m_array[indexAt] = element;
             return true;
@@ -266,14 +274,14 @@ namespace dive{ // Cube Standard Library
         }
 
         T* end (){ // iterator
-            return m_array + index;
+            return m_array + m_index;
         }
 
-        void sort(void){ // overload for sort, where it automatically sorts in ascending
+        constexpr void sort(void){ // overload for sort, where it automatically sorts in ascending
             std::sort(this->begin(), this->end());
         }
 
-        void sort(bool method){ // sorts, and if method = true, sorts in ascending, descending if false
+        constexpr void sort(bool method){ // sorts, and if method = true, sorts in ascending, descending if false
             if (method){
                 std::sort(this->begin(), this->end());
             } else{
@@ -303,8 +311,8 @@ namespace dive{ // Cube Standard Library
          * sample_arr.set(<index>).to(<value>);
          */
         element_construct set (int index){
-            if (index>this->index || index < 0){
-                throw ArrayIndexOutOfBounds(this->index, index);
+            if (index>this->m_index || index < 0){
+                throw ArrayIndexOutOfBounds(this->m_index, index);
             }
             element_construct temp(index, this, true);
             return temp;
@@ -326,11 +334,11 @@ namespace dive{ // Cube Standard Library
             return temp;
         }
 
-        T get (int index){
-            if (index>=this->index){
-                throw ArrayIndexOutOfBounds(this->index, index);
+        T& get (int index){
+            if (index>=this->m_index){
+                throw ArrayIndexOutOfBounds(this->m_index, index);
             } else if (index<0){
-                throw ArrayIndexOutOfBounds(this->index, index);
+                throw ArrayIndexOutOfBounds(this->m_index, index);
             }
             return *(m_array + index);
         }
@@ -371,11 +379,24 @@ namespace dive{ // Cube Standard Library
 
         };
 
+    private:
+        class move_object{
+        private:
+            T * m_move_position;
 
+        public:
+            move_object(T * ptr){
+                ptr = m_move_position;
+            }
+
+            bool to (int index){
+                return true;
+            }
+        };
     public:
         // moves element x at position y to position z, moving respective elements
-        bool move_to (int initial_position, int new_position) {
-            return true;
+        move_object move (int index){
+            return move_object(m_array + index);
         }
         /*
          * finds the index of the first instance of an element, returns -1 if not found

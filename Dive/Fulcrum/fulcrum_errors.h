@@ -13,14 +13,14 @@ namespace dive{
     }
 
     namespace m_private {
-        void m_DepracatedWarning(){
-            throw std::invalid_argument("\tThrown by dive::fulcrum\n\t\t\tUse of deprecated method. To turn off fulcrum warnings, use dive::fulcrum::warnings(false)");
+        void m_DepracatedWarning(std::string method){
+            throw std::invalid_argument("\tThrown by dive::fulcrum\n\t\t\tUse of deprecated method. To turn off fulcrum warnings, use dive::fulcrum::warnings(dive::OFF)\n\t\t\tThrown with use of method: " + method);
         }
     }
-    void DepracatedWarning (bool assist){
+    void DepracatedWarning (bool assist, std::string method){
         if (!assist){
             return;
-        } m_private::m_DepracatedWarning();
+        } m_private::m_DepracatedWarning(method);
     }
 }
 
