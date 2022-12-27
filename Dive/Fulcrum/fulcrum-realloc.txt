@@ -1,0 +1,22 @@
+Contains the equations for the fulcrum-realloc
+
+keep in mind the following variables:
+-> positive [empty buckets on the right side of index zero]
+        this number gets reduced whenever a push_back() happens
+        or when an allocate on the right happens
+-> negative [empty buckets on the left side of index zero]
+        this number gets reduced whenever a push_front() happens
+        or when an allocate on the left happens
+-> m_cached_pos
+        contains the information about the total number of insertions at right side
+-> m_cached_neg
+        contains the information about the total number of insertions in the left side
+-> capacity
+        the total current capacity of the array
+
+realloc at:
+-> when pos == 0
+-> when neg == 0
+
+using cache:
+    ->

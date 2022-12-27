@@ -3,20 +3,16 @@
 #include "debug.h"
 #include <vector>
 #define SIZE 100000
-using namespace dive;
+
+
 int main() {
-    dive::fulcrum<int> arr();
-    dive::
-
-
-
-
-
-
-
-
-
-
+    auto arr = new dive::fulcrum<int>(50);
+    for (int i = 0 ; i <= 500 ; i++){
+        arr->push_back((5*12*i*rand())%1354);
+    }
+    for (auto i : *arr){
+        std::cout << i << " ";
+    }
 
     /*
     Debug timer;

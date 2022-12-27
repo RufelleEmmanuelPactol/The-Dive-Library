@@ -17,7 +17,7 @@ bool test_one (dive::fulcrum<int> fulc){
     return true;
 }
 
-bool test_two (dive::)
+
 
 void run_test(){
     dive::fulcrum<int> fulc(10000);

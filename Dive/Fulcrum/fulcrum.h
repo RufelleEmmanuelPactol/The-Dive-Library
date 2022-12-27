@@ -1,9 +1,21 @@
-//
-// Created by Rufelle on 12/10/2022.
-//
+/*
+ * Created by Rufelle Emmanuel Pactol
+ * This module is part of the DIVE CPP libraries
+ *
+ * This module contains the fulcrum array library,
+ * (c) 2022, Dive Libraries of CubeClub Inc.
+ *
+ * This library is free to use under the premise that
+ * the products herein are assumed to be free of warranty
+ * and do not guarantee of fitness for a particular purpose.
+ *
+ * This library is free to use and can be reused for any purpose
+ * given that this disclaimer tag will not be removed.
+ */
 
 #ifndef fulcrum_h
 #define fulcrum_h
+#include <functional>
 #include <algorithm>
 #include <cstring>
 #include <string>
@@ -17,9 +29,6 @@
 namespace dive{ // Cube Standard Library
 
 
-    enum WARNINGS{
-        OFF, ON
-    };
 
     //template allows for multiple data types
     /*
@@ -33,13 +42,17 @@ namespace dive{ // Cube Standard Library
          */
     template <typename T> class fulcrum {
 
+    private:
+
         static constexpr float R = 1.0/3.0;
-        int m_arrsize;
+        int m_arrsize; // the size of the full array
         T * m_container; // the reallocated base m_array
-        int positive; //number of positions unfilled on the positive index before reallocating
-        int negative; //number of positions unfilled on the negative index before reallocating
-        int m_index; //pointer to past-the-last index
+        int positive; // number of positions unfilled on the positive index before reallocating
+        int negative; // number of positions unfilled on the negative index before reallocating
+        int m_index; // index to past-the-last index
         bool m_warning = true;
+        int m_cached_pos; //cache values counting the adds and removes of the positive side
+        int m_cached_neg;//cache values counting the adds and removes of the megative side
 
     private:
 
@@ -68,9 +81,24 @@ namespace dive{ // Cube Standard Library
 
 
     private: T * m_array; //pointer to index zero
+    void __init_to_zero__ (){
+        m_index = 0;
+        m_cached_neg = 0;
+        m_cached_pos = 0;
+    }
+
+    /*
+     * Helper functions for reallloc
+     */
+    int floor_quart(){
+        return floor(capacity()/4);
+    }
+    int max_quart(){
+        return ceil(capacity()/4);
+    }
 
 
-    public:
+    public: // HEADER GUARDS AND STANDARD DICTATORS
             /*
              * Warning! We do not recommend using the array
              * object. Not only is it dangerous, but it can also
@@ -79,16 +107,23 @@ namespace dive{ // Cube Standard Library
              *
              */
         T * array (){
+            ArrayWarning(m_warning);
             DepracatedWarning(m_warning, "array()");
             return m_array;
         }
 
         /*
          * This method allows you to set the warning levels of the object.
-         * When fulcrum's warning level is set to true, using
+         * When fulcrum's warning level is set to dive::ON, using
          * deprecated methods will cause an error to be thrown.
          *
-         * params(bool warn):
+         * When using namespace dive, this method can be shortened to
+         * array->warnings(ON) or array->warnings(OFF)
+         *
+         * if not, use array->warnings(dive::ON) or array->warnings(dive::OFF)
+         * to toggle the warning levels
+         *
+         * params(WARNINGS warn):
          *      set to true to raise warning levels when using deprecated methods
          *      set to false when you want to use deprecated methods
          */
@@ -99,6 +134,14 @@ namespace dive{ // Cube Standard Library
                 m_warning = false;
             }
         }
+
+        /*
+         * As of
+         */
+        constexpr void set_thread(bool thread_status){
+
+        }
+
 
         // OPERATORS
         auto operator[](int n){
@@ -123,7 +166,7 @@ namespace dive{ // Cube Standard Library
         /*
          * The default constructor of the fulcrum object. Has no params.
          * It has a default size of 5, but it can hold at max 10, where
-         * tail-inclined-additions and tail-inclined additions are both
+         * tail-inclined-additions and head-inclined additions are both
          * of equal value.
          *
          * inclined additions are of the following:
@@ -142,7 +185,7 @@ namespace dive{ // Cube Standard Library
             negative = 5;
             m_container = new T[m_arrsize];
             m_array = m_container + 5;
-            m_index = 0;
+            __init_to_zero__();
         }
 
 
@@ -176,13 +219,13 @@ namespace dive{ // Cube Standard Library
         *      are all head-inclined additions.
         *
         */
-        fulcrum(int n){
-            m_arrsize = n * 2;
-            positive = n;
-            negative = n;
+        fulcrum(int reserve){
+            m_arrsize = reserve * 2;
+            positive = reserve;
+            negative = reserve;
             m_container = new T[m_arrsize];
-            m_array = m_container + n;
-            m_index = 0;
+            m_array = m_container + reserve;
+            __init_to_zero__();
         }
 
         fulcrum(T * arr, int n){ //transforms an m_array into a fulcrum m_array,
@@ -195,6 +238,8 @@ namespace dive{ // Cube Standard Library
                 *(m_array + i) = *(arr + i);
             }
             m_index = n;
+            m_cached_neg = 0;
+            m_cached_pos = 0;
         }
 
         /*
@@ -205,6 +250,7 @@ namespace dive{ // Cube Standard Library
             m_index++;
             negative--;
             *(m_array) = n;
+            m_cached_pos++;
             return true;
         }
 
@@ -213,6 +259,25 @@ namespace dive{ // Cube Standard Library
             positive--;
             *(m_array + m_index) = n;
             m_index++;
+            m_cached_neg++;
+            return true;
+        }
+
+        bool reserve(int requested_reserve){
+            if (requested_reserve<=m_index){
+                InvalidReserve(m_index, requested_reserve);
+            }
+            auto size = m_index * 2;
+            auto quarter = size / 4;
+            auto m_allocate = new T[size];
+            auto m_start = m_allocate + quarter;
+            memcpy(m_start, m_array, m_index*sizeof(T));
+            auto _m_index = m_start + m_index;
+            positive = quarter;
+            negative = quarter;
+            m_array = m_start;
+            m_container = m_allocate;
+            m_arrsize = size;
             return true;
         }
 
@@ -233,23 +298,48 @@ namespace dive{ // Cube Standard Library
         }
 
         /*
+         * returns the amount of free capacity available in the current
+         * iteration of the arra
+         */
+        int free_capacity(){
+            return positive + negative;
+        }
+
+        /*
          * This method returns the last element and removes it from the array.
          */
-        T pop_back (){
+        T pop (){
+            if (m_index==0){
+                PopException();
+                return top();
+            }
             T temp = *(m_array + m_index - 1);
             m_index--;
             positive++;
+            m_cached_pos--;
             return temp;
         }
 
         /*
          * This method returns the first element and removes it from the array.
+         * Params:
+         *      (bool direction)
+         *      where bool true = pops at front
+         *      where bool false = pops at back
          */
-        T pop_front(){ // removes the element at the front
+        T pop(bool direction){ // removes the element at the front
+            if(!direction){
+                return pop();
+            }
+            if (m_index==0){
+                PopException();
+                return top();
+            }
             T temp = *(m_array);
             m_index--;
             negative++;
             m_array = m_array + 1;
+            m_cached_neg--;
             return temp;
         }
 
@@ -268,7 +358,7 @@ namespace dive{ // Cube Standard Library
         }
 
 
-        T*  begin (){ // iterator
+        T* begin (){ // iterator
 
             return m_array;
         }
@@ -334,6 +424,16 @@ namespace dive{ // Cube Standard Library
             return temp;
         }
 
+        /*
+         * Gets the value at a specified index. The returned value is mutable,
+         * and doing the following syntax:
+         *
+         *      array->get(2) = 12;
+         *
+         * will replace the element at index 2 with the value 12. To use this
+         * method without the risk of mutating the value of the array, use the
+         * at() method.
+         */
         T& get (int index){
             if (index>=this->m_index){
                 throw ArrayIndexOutOfBounds(this->m_index, index);
@@ -341,6 +441,21 @@ namespace dive{ // Cube Standard Library
                 throw ArrayIndexOutOfBounds(this->m_index, index);
             }
             return *(m_array + index);
+        }
+
+
+        /*
+         * Returns the value at a specified index. The returned value is immutable,
+         * and doing the following syntax:
+         *
+         *      array->get(2) = 12;
+         *
+         * will not replace the element at index 2 with the value 12. To use this
+         * method with mutation enabled, use the get() method. Moreover, to explicitly
+         * set the value without explicitly recovering the value, use the set().to() method
+         */
+        T at (int index){
+            return get(index);
         }
 
     private:
@@ -421,6 +536,18 @@ namespace dive{ // Cube Standard Library
         int find (T value, int instance){
             return -1;
         }
+
+        T& top(){
+            if (m_index == 0){
+                TopException();
+            }
+          return *(m_array + m_index - 1);
+        }
+
+        T& bottom(){
+            return *m_array;
+        }
+
 
 
     };
