@@ -12,6 +12,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <memory>
 
 namespace dive {
 
@@ -20,7 +21,7 @@ namespace dive {
      *
      * @brief   This class is a proxy class for the CPP @c std::istream class.
      *
-     * @author  Rufelle Emmanuel Pactol, Dive
+     * @author  Rufelle Emmanuel Pactol, Dive Framework
      * @version 1.0
      * @since   30-12-22
      */

@@ -3,7 +3,7 @@
  * This module is part of the DIVE CPP libraries
  *
  * This module contains the fulcrum array library,
- * (c) 2022, Dive Libraries of CubeClub Inc.
+ * (c) 2022, Dive Framework Libraries of CubeClub Inc.
  *
  * This library is free to use under the premise that
  * the products herein are assumed to be free of warranty
