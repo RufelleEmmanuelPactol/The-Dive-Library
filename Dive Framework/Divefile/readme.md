@@ -5,22 +5,36 @@ This library aims to make CPP file handling easier, mirroring JAVA's FileReader 
 ## FileReader
 
 Has the following methods:
+
 readLine();
+
 readFile();
+
 resetFile();
+
 isOpen();
+
 close();
+
 get();
+
 
 ## FileWriter
 
 Has the following methods:
 
 writeLine();
+
 writeFile(vector);
+
 writeFile(vector, delimiter);
+
 setAppend();
+
 isAppend();
+
 isOpen();
+
 close();
+
 flush();
