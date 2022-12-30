@@ -61,6 +61,7 @@ namespace dive{
         }
     }
 
+
     void PopException(){
         throw std::out_of_range("\tThrown by dive::fulcrum\n\t\t\tInvalid pop behavior. No more elements to pop.");
     }

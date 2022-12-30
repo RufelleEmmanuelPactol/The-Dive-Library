@@ -22,9 +22,8 @@
 #include <cmath>
 #include <memory>
 #include "fulcrum_errors.h"
-
-
-
+#define let auto const // undefined at end for safety
+#define func auto constexpr // undefined at end for safety
 
 namespace dive{ // Cube Standard Library
 
@@ -45,14 +44,15 @@ namespace dive{ // Cube Standard Library
     private:
 
         static constexpr float R = 1.0/3.0;
-        int m_arrsize; // the size of the full array
+        size_t m_arrsize; // the size of the full array
         T * m_container; // the reallocated base m_array
-        int positive; // number of positions unfilled on the positive index before reallocating
-        int negative; // number of positions unfilled on the negative index before reallocating
-        int m_index; // index to past-the-last index
+        size_t positive; // number of positions unfilled on the positive index before reallocating
+        size_t negative; // number of positions unfilled on the negative index before reallocating
+        size_t m_index; // index to past-the-last index
         bool m_warning = true;
         int m_cached_pos; //cache values counting the adds and removes of the positive side
         int m_cached_neg;//cache values counting the adds and removes of the megative side
+        bool m_thread = false;
 
     private:
 
@@ -68,13 +68,13 @@ namespace dive{ // Cube Standard Library
          * positive, negative = (15% of size_of_array)
          *
          */
-        constexpr void decrease(){
+        func decrease(){
             if (m_index<=round(m_arrsize * (R))){
 
             }
             return;
         }
-        constexpr void increase(){
+        func increase(){
             return;
         }
 
@@ -136,10 +136,37 @@ namespace dive{ // Cube Standard Library
         }
 
         /*
-         * As of
+         * As of fulcrum 1.1.0, multithreading is EXPERIMENTAL
+         *
+         * params:
+         *      void
+         *
+         * usage:
+         *      dive::fulcrum::set_multithreading() = false;
+         *      dive::fulcrum::set_multithreading() = true;
+         *
+         * returns a boolean reference which can be set to a particular value.
+         * set thread_status to true if you want multithreading to be
+         * enabled. Currently, the following methods are planned to support
+         * multi-threading:
+         *
+         *      concat();
+         *      resize_up(); [private method]
+         *      resize_down(); [private method]
+         *      fulcrum({<initializer lists>}) [is a constructor]
+         *      fulcrum(<T*>, <size_t>) [is a constructor]
+         *      fulcrum = [assignment operator]
          */
-        constexpr void set_thread(bool thread_status){
+        constexpr bool& set_multithreading(){
+            return m_thread;
+        }
 
+        /*
+         * returns the multithreading status of the object.
+         * returns true if multithreading is on and false if not.
+         */
+        constexpr bool is_multithreaded(){
+            return m_thread;
         }
 
 
@@ -228,7 +255,7 @@ namespace dive{ // Cube Standard Library
             __init_to_zero__();
         }
 
-        fulcrum(T * arr, int n){ //transforms an m_array into a fulcrum m_array,
+        fulcrum(T * arr, size_t n){ //transforms an m_array into a fulcrum m_array,
             m_arrsize = n * 2; //where n is the last element to be added and is NOT the max capacity of the last m_array
             positive = 0;
             negative = n;
@@ -350,7 +377,12 @@ namespace dive{ // Cube Standard Library
             return true;
         }
 
-        void concat (dive::fulcrum<T> fulcrum_two){ // concats the start of fulcrum_2 from the end of fulcrum_1
+        void concat (dive::fulcrum<T>& fulcrum_two){ // concats the start of fulcrum_2 from the end of fulcrum_1
+            if (m_thread){
+                std::cout << "threading enabled";
+                return;
+            }
+
             for (auto i : fulcrum_two){
                 push_back(i);
             }
@@ -556,5 +588,6 @@ namespace dive{ // Cube Standard Library
 
 }
 
-
+#undef let
+#undef func
 #endif
