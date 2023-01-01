@@ -12,7 +12,6 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <memory>
 
 namespace dive {
 
@@ -21,7 +20,7 @@ namespace dive {
      *
      * @brief   This class is a proxy class for the CPP @c std::istream class.
      *
-     * @author  Rufelle Emmanuel Pactol, Dive Framework
+     * @author  Rufelle Emmanuel Pactol, Dive
      * @version 1.0
      * @since   30-12-22
      */
@@ -187,17 +186,9 @@ namespace dive {
          * @return Returns true if the operation is successful.
          */
         bool writeVector(const std::vector<std::string> &vector){
-            if (append){
-                for (auto i : vector){
-                    *output_file << i << std::endl;
-                } return true;
-            }
-            setAppend(true);
-            for (auto i: vector){
+            for (auto i : vector){
                 *output_file << i << std::endl;
-            }
-            append = false;
-            return true;
+            } return true;
         }
 
         /**
