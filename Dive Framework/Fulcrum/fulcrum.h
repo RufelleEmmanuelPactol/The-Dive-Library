@@ -22,6 +22,7 @@
 #include <cmath>
 #include <memory>
 #include "fulcrum_errors.h"
+#include <iostream>
 #define let auto const // undefined at end for safety
 #define func auto constexpr // undefined at end for safety
 
@@ -213,6 +214,10 @@ namespace dive{ // Cube Standard Library
             m_container = new T[m_arrsize];
             m_array = m_container + 5;
             __init_to_zero__();
+        }
+
+        ~fulcrum(){
+            delete m_container;
         }
 
 
